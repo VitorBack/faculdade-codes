@@ -1,8 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 int valor_no = 0;
 
-typedef struct {
+typedef struct nolista{
 	struct nolista *proximo;
 	int s, t, i;
 } nolista, lista;
@@ -82,19 +83,44 @@ void insere_lista (lista *l, int t) {
 	if (status) printf ("No' NAO pode ser inserido na Lista...\n");
 }
 
-void main (void) {
-	lista l;
-	inicializa_lista (&l, 50);
-	exibe_lista (&l);
-	insere_lista (&l, 20);
-	exibe_lista (&l);
-	insere_lista (&l, 10);
-	exibe_lista (&l);
-	insere_lista (&l, 10);
-	exibe_lista (&l);
-	retira_lista (&l, 1);
-	exibe_lista (&l);
-	insere_lista (&l, 10);
-	exibe_lista (&l);
-	system ("pause");
+int main(void) {
+    lista minhaLista;
+    int opcao = 0, valor = 0;
+
+    printf("Informe o tamanho total da memoria inicial: ");
+    scanf("%d", &valor);
+    inicializa_lista(&minhaLista, valor);
+
+    do {
+        printf("\n========= MENU TAD LISTA =========\n");
+        printf("1. Inserir (Alocar Memoria)\n");
+        printf("2. Retirar (Liberar por ID)\n");
+        printf("3. Exibir Lista\n");
+        printf("0. Sair\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                printf("Digite o tamanho a ser alocado: ");
+                scanf("%d", &valor);
+                insere_lista(&minhaLista, valor);
+                break;
+            case 2:
+                printf("Digite o ID para liberar: ");
+                scanf("%d", &valor);
+                retira_lista(&minhaLista, valor);
+                break;
+            case 3:
+                exibe_lista(&minhaLista);
+                break;
+            case 0:
+                printf("Saindo...\n");
+                break;
+            default:
+                printf("Opcao invalida!\n");
+        }
+    } while (opcao != 0);
+
+    return 0;
 }
