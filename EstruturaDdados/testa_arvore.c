@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "arvore.h"
+#include "emnivel_arvore.h"
 
 void main (void) {
 	int i;
@@ -14,6 +15,7 @@ void main (void) {
 	printf ("\n\nPreOrdem: "); preordem_arvore (&a);
 	printf ("\n\n EmOrdem: "); emordem_arvore (&a);
 	printf ("\n\nPosOrdem: "); posordem_arvore (&a);
+	printf ("\n\n EmNivel: "); emnivel_arvore (&a);
 	printf ("\n\n");
 	
 	system ("pause");
