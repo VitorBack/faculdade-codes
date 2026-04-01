@@ -1,148 +1,244 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <string.h>
+#include <limits.h>
 
-int comparar(const void *a, const void *b) {
-    return (*(int*)a - *(int*)b);
-}
+typedef struct {
+    int pid;
+    int vsc;  
+    int td;  
+    int bt;  
+    int p;    
+} Processo;
 
-void imprimeTableRef(int quant_processos, int vetor_vsc[], int vetor_bt[], int vetor_prty[], int vetor_td[]) {
-    int i = 1;
-    while (i <= quant_processos) {
-        printf("\nProcesso %d: ", i);
-        printf("\nChegada: %d", vetor_vsc[i-1]);
-        printf("\nBurst Time: %d", vetor_bt[i-1]);
-        printf("\nPrioridade: %d", vetor_prty[i-1]);
-        printf("\nTempo de Espera: %d\n", vetor_td[i-1]);
-        i++;
-    }
-}
+void lerDados(int *quant, int *chg_em_zero,int *menor_chegada, int *maior_chegada,int *menor_bt,  int *maior_bt,int *menor_prty) {
 
-void defineVSC(int quant_processos, int chg_em_zero, int vetor_vsc[]) {
-    int i = 0;
-    int menor_chegada, maior_chegada;
+    printf("\nQuantidade de Processos a simular: ");
+    scanf("%d", quant);
+
+    printf("Chegada em Zero (1-Sim): ");
+    scanf("%d", chg_em_zero);
 
     while (1) {
-        printf("\nMenor Chegada: ");
-        scanf("%d", &menor_chegada);
-
-        if (chg_em_zero == 1 && menor_chegada == 0) {
-            break;
-        } else if (menor_chegada > 0) {
-            break;
-        } else {
-            printf("O valor informado deve ser maior que 0 (ou 0 se confirmou chegada em zero)!\n");
-        }
+        printf("Menor Chegada (> 0): ");
+        scanf("%d", menor_chegada);
+        if (*menor_chegada > 0) break;
+        printf("  Valor deve ser > 0!\n");
     }
 
     while (1) {
-        printf("\nMaior Chegada: ");
-        scanf("%d", &maior_chegada);
-        if (maior_chegada >= menor_chegada) {
-            break;
-        } else {
-            printf("O valor informado para maior chegada deve ser MAIOR ou IGUAL a menor chegada!\n");
-        }
+        printf("Maior Chegada (>= %d): ", *menor_chegada);
+        scanf("%d", maior_chegada);
+        if (*maior_chegada >= *menor_chegada) break;
+        printf("  Valor deve ser >= %d!\n", *menor_chegada);
     }
+
+    while (1) {
+        printf("Menor Burst Time (> 0): ");
+        scanf("%d", menor_bt);
+        if (*menor_bt > 0) break;
+        printf("  Valor deve ser > 0!\n");
+    }
+
+    while (1) {
+        printf("Maior Burst Time (>= %d): ", *menor_bt);
+        scanf("%d", maior_bt);
+        if (*maior_bt >= *menor_bt) break;
+        printf("  Valor deve ser >= %d!\n", *menor_bt);
+    }
+
+    while (1) {
+        printf("Menor Prioridade (> 0): ");
+        scanf("%d", menor_prty);
+        if (*menor_prty > 0) break;
+        printf("  Valor deve ser > 0!\n");
+    }
+}
+
+void gerarProcessos(int quant, int chg_em_zero,int menor_chegada, int maior_chegada,int menor_bt,  int maior_bt, int menor_prty, Processo vtr_processos[]) {
+    int i;
 
     if (chg_em_zero == 1) {
-        vetor_vsc[0] = 0;
-        for (i = 1; i < quant_processos; i++) {
-            vetor_vsc[i] = rand() % (maior_chegada - menor_chegada + 1) + menor_chegada;
+        vtr_processos[0].vsc = 0;
+        for (i = 1; i < quant; i++){
+            vtr_processos[i].vsc = rand() % (maior_chegada - menor_chegada + 1) + menor_chegada;
         }
     } else {
-        for (i = 0; i < quant_processos; i++) {
-            vetor_vsc[i] = rand() % (maior_chegada - menor_chegada + 1) + menor_chegada;
+        for (i = 0; i < quant; i++){
+            vtr_processos[i].vsc = rand() % (maior_chegada - menor_chegada + 1) + menor_chegada;
         }
     }
 
-    qsort(vetor_vsc, quant_processos, sizeof(int), comparar);
-}
+    for (i = 0; i < quant; i++) {
+        if (i == 0){
+            vtr_processos[i].td = (chg_em_zero == 1) ? 0 : vtr_processos[i].vsc;
+        }
 
-void defineBT(int quant_processos, int vetor_bt[]) {
-    int menor_BT, maior_BT;
-
-    while (1) {
-        printf("\nMenor Burst Time: ");
-        scanf("%d", &menor_BT);
-        if (menor_BT > 0) {
-            break;
-        } else {
-            printf("O valor informado nao pode ser 0!\n");
+        else {
+            vtr_processos[i].td = vtr_processos[i].vsc + vtr_processos[i - 1].td;
         }
     }
 
-    while (1) {
-        printf("\nMaior Burst Time: ");
-        scanf("%d", &maior_BT);
-        if (maior_BT >= menor_BT) {
-            break;
-        } else {
-            printf("O valor informado para maior burst time deve ser MAIOR ou IGUAL ao menor burst time!\n");
-        }
-    }
-
-    for (int i = 0; i < quant_processos; i++) {
-        vetor_bt[i] = rand() % (maior_BT - menor_BT + 1) + menor_BT;
+    for (i = 0; i < quant; i++) {
+        vtr_processos[i].pid = i + 1;
+        vtr_processos[i].bt  = rand() % (maior_bt - menor_bt + 1) + menor_bt;
+        vtr_processos[i].p   = rand() % menor_prty + 1;
     }
 }
 
-void definePrty(int quant_processos, int vetor_prty[]) {
-
-    int menor_prty;
-
-    while (1) {
-        printf("\nMenor Prioridade: ");
-        scanf("%d", &menor_prty);
-        if (menor_prty > 0) {
-            break;
-        } else {
-            printf("O valor informado nao pode ser 0!\n");
-        }
-    }
-    for (int i = 0; i < quant_processos; i++) {
-        vetor_prty[i] = rand() % menor_prty + 1;
+void imprimeTableRef(int quant, Processo vtr_processos[]) {
+    int i;
+    printf("\n%-5s | %-5s | %-5s | %-5s | %-5s\n",
+           "PId", "VSC", "TD", "BT", "P");
+    printf("------+-------+-------+-------+------\n");
+    for (i = 0; i < quant; i++) {
+        printf("%-5d | %-5d | %-5d | %-5d | %-5d\n",
+               vtr_processos[i].pid, vtr_processos[i].vsc,
+               vtr_processos[i].td,  vtr_processos[i].bt, vtr_processos[i].p);
     }
 }
 
-void defineTd(int quant_processos, int chg_em_zero, int vetor_td[], int vetor_vsc[]) {
-    for (int i = 0; i < quant_processos; i++) {
-        if (chg_em_zero == 0) {
-            vetor_td[i] = vetor_vsc[i];
-        } else {
-            if(vetor_vsc[i] == 0) {
-                vetor_td[i] = 0;
-            } else {
-            vetor_td[i] = vetor_vsc[i] + vetor_td[i-1];
+void simular(int quant, Processo vtr_processos[], int algoritmo) {
+
+    const char *nomes[] = {"", "Tabela Referencia", "FIFO", "SJF", "PRTY", "LIFO"};
+
+    int tc[quant];   
+    int tf[quant];  
+    int tsc[quant];  
+
+    int cpu_pid[quant];
+    int cpu_ti[quant]; 
+    int cpu_tt[quant];
+    int executado[quant];
+    int exec_order[quant];  
+
+    memset(executado, 0, quant * sizeof(int));
+
+    int i;
+    for (i = 0; i < quant; i++){
+        tc[i] = vtr_processos[i].td;
+    }
+
+    int current_time = vtr_processos[0].td;
+    int exec_count   = 0;
+
+    while (exec_count < quant) {
+
+        int chosen = -1;
+
+        for (i = 0; i < quant; i++) {
+            if (executado[i] || vtr_processos[i].td > current_time)
+                continue;
+
+            if (chosen == -1) {
+                chosen = i;
+                continue;
             }
+
+            int pick = 0;
+            switch (algoritmo) {
+                case 2: 
+                    pick = (vtr_processos[i].td < vtr_processos[chosen].td);
+                    break;
+
+                case 3: 
+                    pick = (vtr_processos[i].bt < vtr_processos[chosen].bt) ||
+                           (vtr_processos[i].bt == vtr_processos[chosen].bt &&
+                            vtr_processos[i].td  < vtr_processos[chosen].td);
+                    break;
+
+                case 4: 
+                    pick = (vtr_processos[i].p < vtr_processos[chosen].p) ||
+                           (vtr_processos[i].p == vtr_processos[chosen].p &&
+                            vtr_processos[i].td < vtr_processos[chosen].td);
+                    break;
+
+                case 5: 
+                    pick = (vtr_processos[i].td > vtr_processos[chosen].td);
+                    break;
+            }
+            if (pick) chosen = i;
         }
+
+        if (chosen == -1) {
+            int next_td = INT_MAX;
+            for (i = 0; i < quant; i++)
+                if (!executado[i] && vtr_processos[i].td < next_td)
+                    next_td = vtr_processos[i].td;
+            current_time = next_td;
+            continue;
+        }
+
+        executado[chosen]          = 1;
+        exec_order[exec_count]     = chosen;
+
+        tf[chosen]                 = current_time;
+        tsc[chosen]                = tf[chosen] - tc[chosen];
+
+        cpu_pid[exec_count]        = vtr_processos[chosen].pid;
+        cpu_ti[exec_count]         = current_time;
+        cpu_tt[exec_count]         = current_time + vtr_processos[chosen].bt;
+        current_time               = cpu_tt[exec_count];
+
+        exec_count++;
+    }
+
+    printf("\n=== %s ===\n", nomes[algoritmo]);
+
+    printf("\nFILA DE APTO\n");
+    printf("%-5s | %-5s | %-5s | %-5s\n", "PId", "TC", "TF", "TSC");
+    printf("------+-------+-------+------\n");
+    for (i = 0; i < quant; i++) {
+        int idx = exec_order[i];
+        printf("%-5d | %-5d | %-5d | %-5d\n",
+               vtr_processos[idx].pid, tc[idx], tf[idx], tsc[idx]);
+    }
+
+    printf("\nCPU\n");
+    printf("%-5s | %-5s | %-5s\n", "PId", "TI", "TT");
+    printf("------+-------+------\n");
+    for (i = 0; i < quant; i++) {
+        printf("%-5d | %-5d | %-5d\n",
+               cpu_pid[i], cpu_ti[i], cpu_tt[i]);
     }
 }
 
 int main() {
-    srand(time(NULL)); 
+    srand((unsigned)time(NULL));
 
-    int quant_processos, chg_em_zero;
+    int quant, chg_em_zero;
+    int menor_chegada, maior_chegada;
+    int menor_bt,  maior_bt;
+    int menor_prty;
 
-    printf("\nQuantidade de processos: ");
-    scanf("%d", &quant_processos);
+    lerDados(&quant, &chg_em_zero,&menor_chegada,&maior_chegada,&menor_bt,&maior_bt,&menor_prty);
 
-    printf("\nChegada em Zero? 1-Sim; 2-Nao: ");
-    scanf("%d", &chg_em_zero);
+    Processo vtr_processos[quant];
+    gerarProcessos(quant, chg_em_zero,menor_chegada,maior_chegada,menor_bt,maior_bt,menor_prty, vtr_processos);
 
-    int vetor_vsc[quant_processos];
-    defineVSC(quant_processos, chg_em_zero, vetor_vsc);
+    int opcao;
+    do {
+        printf("\nOpcoes => 1-Tabela Referencia 2-FIFO 3-SJF 4-PRTY 5-LIFO 0-Sair: ");
+        scanf("%d", &opcao);
 
-    int vetor_bt[quant_processos];
-    defineBT(quant_processos, vetor_bt);
-
-    int vetor_prty[quant_processos];
-    definePrty(quant_processos, vetor_prty);
-
-    int vetor_td[quant_processos];
-    defineTd(quant_processos, chg_em_zero, vetor_td, vetor_vsc);
-
-    imprimeTableRef(quant_processos, vetor_vsc, vetor_bt, vetor_prty, vetor_td);
+        switch (opcao) {
+            case 1:
+                imprimeTableRef(quant, vtr_processos);
+                break;
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+                simular(quant, vtr_processos, opcao);
+                break;
+            case 0:
+                printf("Encerrando...\n");
+                break;
+            default:
+                printf("Opcao invalida!\n");
+        }
+    } while (opcao != 0);
 
     return 0;
 }
