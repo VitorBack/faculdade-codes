@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "busca_largura_grafo.h"
+#include "busca_profundidade_grafo.h"
 
-#define MAX_VERTICES 50
+#define MAX_VERTICES 50   /* mesmo valor de BL_MAX e BP_MAX nos headers */
 #define MAX_ARESTAS  200
 
 int adj[MAX_VERTICES][MAX_VERTICES];
@@ -11,7 +13,7 @@ int numVertices = 0;
 int numArestas  = 0;
 
 int buscarVertice(int v) {
-    for (int i = 0; i < numVertices; i++)   
+    for (int i = 0; i < numVertices; i++)
         if (vertices[i] == v) return i;
     return -1;
 }
@@ -44,8 +46,7 @@ void apresentarMatriz() {
     printf("   ");
     for (int i = 0; i < numVertices; i++)
         printf(" %3d", vertices[i]);
-    printf("\n");
-    printf("   ");
+    printf("\n   ");
     for (int i = 0; i < numVertices; i++)
         printf(" ---");
     printf("\n");
@@ -95,9 +96,9 @@ void buscarPercurso() {
         return;
     }
     int va, vb;
-    printf("\nVertice inicial(apenas o número): ");
+    printf("\nVertice inicial (apenas o numero): ");
     scanf("%d", &va);
-    printf("Vertice final(apenas o número): ");
+    printf("Vertice final   (apenas o numero): ");
     scanf("%d", &vb);
 
     int ia = buscarVertice(va);
@@ -118,7 +119,8 @@ void buscarPercurso() {
     if (tam == 0) {
         printf("\nNao existe percurso entre %d e %d.\n", va, vb);
     } else {
-        printf("\nPercurso encontrado (%d salto%s):\n  ", tam - 1, tam - 1 > 1 ? "s" : "");
+        printf("\nPercurso encontrado (%d salto%s):\n  ",
+               tam - 1, tam - 1 > 1 ? "s" : "");
         for (int i = 0; i < tam; i++) {
             printf("%d", vertices[caminho[i]]);
             if (i < tam - 1) printf(" -> ");
@@ -140,15 +142,13 @@ void cadastrarArestas() {
         scanf("%d", &b);
         if (a == b) {
             printf("  (!) Vertice inicial e final iguais. Aresta ignorada.\n");
-            i--;
-            continue;
+            i--; continue;
         }
         int ia = buscarVertice(a);
         int ib = buscarVertice(b);
         if (ia != -1 && ib != -1 && adj[ia][ib] == 1) {
             printf("  (!) Aresta %d-%d ja existe. Ignorada.\n", a, b);
-            i--;
-            continue;
+            i--; continue;
         }
         adicionarAresta(a, b);
         printf("  Aresta %d-%d adicionada.\n", a, b);
@@ -171,13 +171,34 @@ int main() {
         scanf("%d", &opcao);
 
         switch (opcao) {
-            case 1: cadastrarArestas();  break;
-            case 2: apresentarMatriz();  break;
-            case 3: buscarPercurso();    break;
+            case 1: cadastrarArestas(); break;
+            case 2: apresentarMatriz(); break;
+            case 3: buscarPercurso();   break;
             case 0: printf("Encerrando.\n"); break;
             default: printf("Opcao invalida.\n");
         }
     } while (opcao != 0);
+
+    if (numVertices == 0) {
+        printf("Nenhum grafo cadastrado. Encerrando.\n");
+        return 0;
+    }
+
+    int va, vb;
+    printf("\n--- Busca externa ---\n");
+    printf("Vertice de origem : "); scanf("%d", &va);
+    printf("Vertice de destino: "); scanf("%d", &vb);
+
+    int origem  = buscarVertice(va);
+    int destino = buscarVertice(vb);
+
+    if (origem == -1 || destino == -1) {
+        printf("Vertice(s) inexistente(s) no grafo.\n");
+        return 1;
+    }
+
+    busca_largura_grafo    (origem, destino, adj, numVertices);
+    busca_profundidade_grafo(origem, destino, adj, numVertices);
 
     return 0;
 }
