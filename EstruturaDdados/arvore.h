@@ -1,62 +1,82 @@
-#include <stdio.h>
-#include <stdlib.h>
-
-typedef struct no {
-  int elemento;
-  struct no *esquerda;
-  struct no *direita;
-} No;
-
 typedef struct {
-    No *raiz;
-} arvore;
+	int elemento;
+	struct noarvore *esquerda;
+	struct noarvore *direita;
+} noarvore, arvore;
 
-void inicializaArvore(arvore *a) {
-    a->raiz = NULL;
+void inicializa_arvore (arvore *a) {
+	a->esquerda = NULL;
+	a->elemento = 0; // número de nós da árvore
 }
 
-No* insereNo(No *raiz, int elemento) {
-    if (raiz == NULL) {
-      No *novo = (No*) malloc(sizeof(No));
-      novo->elemento = elemento;
-        novo->esquerda = NULL;
-        novo->direita = NULL;
-        return novo;
-    }
+int tamanho_arvore (arvore *a) { return a->elemento; }
 
-    if (elemento < raiz->elemento) {
-        raiz->esquerda = insereNo(raiz->esquerda, elemento);
-    } else if (elemento > raiz->elemento) {
-        raiz->direita = insereNo(raiz->direita, elemento);
-    }
+noarvore *raiz_arvore (arvore *a) { return a->esquerda; }
 
-    return raiz;
+noarvore *alocano_arvore (int elemento) {
+	noarvore *no = (noarvore *) malloc (sizeof (noarvore));
+	if (no) {
+		no->elemento = elemento;
+		no->esquerda = NULL;
+		no->direita = NULL;
+	}
+	return no;
 }
 
-void insereArvore(arvore *a, int elemento) {
-    a->raiz = insereNo(a->raiz, elemento);
+void insere_arvore (arvore *a, int elemento) {
+	noarvore *no = alocano_arvore (elemento);
+	noarvore *noAtual = a->esquerda;
+	int status_operacao = 1;
+	if (no) {
+		if (!raiz_arvore (a)) {
+			a->elemento++;
+			a->esquerda = no;
+		}
+		else {
+			do {
+				if (noAtual->elemento > elemento) {
+					if (noAtual->esquerda) noAtual = noAtual->esquerda;
+					else {
+						a->elemento++;
+						noAtual->esquerda = no;
+						status_operacao = 0;
+					}
+				}
+				else if (noAtual->elemento < elemento) {
+					if (noAtual->direita) noAtual = noAtual->direita;
+					else {
+						a->elemento++;
+						noAtual->direita = no;
+						status_operacao = 0;
+					}
+				}
+				else {
+					free (no);
+					status_operacao = 0;
+				}
+			} while (status_operacao);
+		}
+	}
 }
 
-void ordenacao(No *raiz) {
-    if (raiz != NULL) {
-        ordenacao(raiz->esquerda);
-        printf("%d ", raiz->elemento);
-        ordenacao(raiz->direita);
-    }
+void mostra_arvore (arvore *a, int ordem) {
+	if (a) {
+		if (ordem == 1) printf("%d, ", a->elemento);
+		mostra_arvore (a->esquerda, ordem);
+		if (ordem == 2) printf("%d, ", a->elemento);
+		mostra_arvore (a->direita, ordem);
+		if (ordem == 3) printf("%d, ", a->elemento);
+	}
 }
 
-int main() {
-    arvore arvore;
+void preordem_arvore (arvore *a) {
+	if (raiz_arvore (a)) mostra_arvore (a->esquerda, 1);
+}
 
-    inicializaArvore(&arvore);
-    insereArvore(&arvore, 7);
-    insereArvore(&arvore, 5);
-    insereArvore(&arvore, 10);
-    insereArvore(&arvore, 15);
-    insereArvore(&arvore, 12);
+void emordem_arvore (arvore *a) {
+	if (raiz_arvore (a)) mostra_arvore (a->esquerda, 2);
+}
 
-    printf("Elementos em ordem: ");
-    ordenacao(arvore.raiz);
-
-    return 0;
+void posordem_arvore (arvore *a) {
+	if (raiz_arvore (a)) mostra_arvore (a->esquerda, 3);
 }
