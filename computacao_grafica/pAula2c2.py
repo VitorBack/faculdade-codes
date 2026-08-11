@@ -33,6 +33,64 @@ def gMeusDesenhos():
 
     glColor3f(1, 0, 0)
     glPointSize(2)
+    glPushMatrix()
+
+    glPushMatrix()
+    glTranslatef(0.25, -0.75, 0)
+    glBegin(GL_LINES)
+
+    angulo = 0
+
+    while angulo < (fator_pi * math.pi):
+
+        glVertex2f(
+            raio * math.cos(angulo),
+            raio * math.sin(angulo)
+        )
+
+        angulo += math.pi / linhas_pontas
+
+    glEnd()
+    glPopMatrix()
+
+    glPushMatrix()
+    glTranslatef(0.75, -0.7, 0)
+    glBegin(GL_LINE_LOOP)
+
+    angulo = 0
+
+    while angulo < (fator_pi * math.pi):
+
+        glVertex2f(
+            raio * math.cos(angulo),
+            raio * math.sin(angulo)
+        )
+
+        angulo += math.pi / linhas_pontas
+
+    glEnd()
+    glPopMatrix()
+
+    glPushMatrix()
+    glTranslatef(0.75, -0.25, 0)
+    glBegin(GL_LINE_STRIP)
+
+    angulo = 1
+
+    while angulo < (fator_pi * math.pi):
+
+        glVertex2f(
+            raio * math.cos(angulo),
+            raio * math.sin(angulo)
+        )
+
+        angulo += math.pi / linhas_pontas
+
+    glEnd()
+    glPopMatrix()
+
+    glPushMatrix()
+    glTranslatef(0.25, -0.25, 0)
     glBegin(GL_POINTS)
 
     angulo = 0
@@ -47,7 +105,7 @@ def gMeusDesenhos():
         angulo += math.pi / linhas_pontas
 
     glEnd()
-
+    glPopMatrix()
 # ============================================================
 # DESENHA
 # ============================================================
