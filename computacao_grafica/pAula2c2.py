@@ -1,14 +1,15 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
+import math
 import sys
 
 
 # Configurações da janela
 g_posicao_x = 50
 g_posicao_y = 50
-g_largura = 500
-g_altura = 500
+g_largura = 600
+g_altura = 600
 g_titulo = "Projeto Base"
 
 g_idle = 0
@@ -16,31 +17,280 @@ g_timer = 0
 g_timer_value = 1
 
 
+# ============================================================
+# MEUS DESENHOS
+# ============================================================
+
+def gMeusDesenhos():
+
+    # --------------------------------------------------------
+    # Circunferência usando seno e cosseno
+    # --------------------------------------------------------
+
+    raio = 0.2
+    linhas_pontas = 30
+    fator_pi = 2
+
+    glColor3f(1, 0, 0)
+    glPointSize(2)
+    glBegin(GL_POINTS)
+
+    angulo = 0
+
+    while angulo < (fator_pi * math.pi):
+
+        glVertex2f(
+            raio * math.cos(angulo),
+            raio * math.sin(angulo)
+        )
+
+        angulo += math.pi / linhas_pontas
+
+    glEnd()
+
+# ============================================================
+# DESENHA
+# ============================================================
+
 def gDesenha():
+
     glEnable(GL_DEPTH_TEST)
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+    glClear(
+        GL_COLOR_BUFFER_BIT |
+        GL_DEPTH_BUFFER_BIT
+    )
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
 
+
+    # ========================================================
+    # EIXOS
+    # ========================================================
+
     glColor3f(0, 0, 0)
 
-    # Eixos (já existentes)
-    glBegin(GL_LINE_STRIP)
+    # Eixo horizontal
+    glBegin(GL_LINES)
     glVertex2f(-1.0, 0.0)
     glVertex2f(1.0, 0.0)
+    glEnd()
+
+    # Eixo vertical
+    glBegin(GL_LINES)
     glVertex2f(0.0, -1.0)
     glVertex2f(0.0, 1.0)
     glEnd()
 
 
+    # ========================================================
+    # TRIÂNGULOS
+    # ========================================================
+
+    glColor3f(1, 0, 0)
+
+    glBegin(GL_TRIANGLES)
+
+    glVertex2f(-0.9, 0.9)
+    glVertex2f(-0.8, 0.8)
+    glVertex2f(-0.7, 0.9)
+
+    glVertex2f(-0.6, 0.8)
+    glVertex2f(-0.5, 0.9)
+    glVertex2f(-0.4, 0.8)
+
+    glEnd()
 
 
+    # ========================================================
+    # TRIÂNGULOS EM SEQUÊNCIA
+    # ========================================================
+
+    glColor3f(1, 0, 0)
+
+    glBegin(GL_TRIANGLES)
+
+    glVertex2f(-0.9, 0.6)
+    glVertex2f(-0.8, 0.5)
+    glVertex2f(-0.7, 0.6)
+
+    glVertex2f(-0.8, 0.5)
+    glVertex2f(-0.7, 0.6)
+    glVertex2f(-0.6, 0.5)
+
+    glVertex2f(-0.7, 0.6)
+    glVertex2f(-0.6, 0.5)
+    glVertex2f(-0.5, 0.6)
+
+    glVertex2f(-0.6, 0.5)
+    glVertex2f(-0.5, 0.6)
+    glVertex2f(-0.4, 0.5)
+
+    glEnd()
 
 
+    # ========================================================
+    # TRIANGLE FAN
+    # ========================================================
 
+    glColor3f(1, 0, 0)
+
+    glBegin(GL_TRIANGLE_FAN)
+
+    glVertex2f(-0.2, 0.9)
+    glVertex2f(-0.4, 0.7)
+    glVertex2f(-0.3, 0.6)
+    glVertex2f(-0.1, 0.6)
+    glVertex2f(-0.0, 0.7)
+
+    glEnd()
+
+
+    # ========================================================
+    # QUADRADO
+    # ========================================================
+
+    glColor3f(1, 0, 0)
+
+    glBegin(GL_QUADS)
+
+    glVertex2f(-0.9, 0.3)
+    glVertex2f(-0.9, 0.1)
+    glVertex2f(-0.8, 0.1)
+    glVertex2f(-0.8, 0.3)
+
+    glEnd()
+
+
+    # ========================================================
+    # QUAD STRIP
+    # ========================================================
+
+    glColor3f(1, 0, 0)
+
+    glBegin(GL_QUAD_STRIP)
+
+    glVertex2f(-0.7, 0.3)
+    glVertex2f(-0.7, 0.1)
+
+    glVertex2f(-0.5, 0.3)
+    glVertex2f(-0.5, 0.1)
+
+    glVertex2f(-0.3, 0.4)
+    glVertex2f(-0.3, 0.0)
+
+    glVertex2f(-0.1, 0.3)
+    glVertex2f(-0.1, 0.1)
+
+    glEnd()
+
+
+    # ========================================================
+    # LINHA LOOP
+    # ========================================================
+
+    glBegin(GL_LINE_LOOP)
+
+    glVertex2f(-0.7, 0.9)
+    glVertex2f(-0.6, 0.8)
+
+    glEnd()
+
+
+    # ========================================================
+    # TRIANGLE FAN
+    # ========================================================
+
+    glBegin(GL_TRIANGLE_FAN)
+
+    glVertex2f(-0.2, 0.9)
+    glVertex2f(-0.4, 0.7)
+    glVertex2f(-0.3, 0.6)
+    glVertex2f(-0.1, 0.6)
+    glVertex2f(-0.0, 0.7)
+
+    glEnd()
+
+
+    # ========================================================
+    # LINHA ZIG-ZAG
+    # ========================================================
+
+    glBegin(GL_LINE_STRIP)
+
+    glVertex2f(-0.9, -0.1)
+    glVertex2f(-0.8, -0.2)
+    glVertex2f(-0.7, -0.1)
+    glVertex2f(-0.6, -0.2)
+    glVertex2f(-0.5, -0.1)
+    glVertex2f(-0.4, -0.2)
+
+    glEnd()
+
+
+    # ========================================================
+    # LINE LOOP
+    # ========================================================
+
+    glBegin(GL_LINE_LOOP)
+
+    glVertex2f(-0.9, -0.5)
+    glVertex2f(-0.8, -0.6)
+    glVertex2f(-0.7, -0.5)
+    glVertex2f(-0.6, -0.6)
+    glVertex2f(-0.5, -0.5)
+    glVertex2f(-0.4, -0.6)
+    glVertex2f(-0.9, -0.5)
+
+    glEnd()
+
+
+    # ========================================================
+    # OUTRO LINE STRIP
+    # ========================================================
+
+    glBegin(GL_LINE_STRIP)
+
+    glVertex2f(-0.2, -0.1)
+    glVertex2f(-0.4, -0.3)
+    glVertex2f(-0.3, -0.4)
+    glVertex2f(-0.1, -0.4)
+    glVertex2f(-0.0, -0.3)
+
+    glEnd()
+
+
+    # ========================================================
+    # OUTRO LINE LOOP
+    # ========================================================
+
+    glBegin(GL_LINE_LOOP)
+
+    glVertex2f(-0.2, -0.5)
+    glVertex2f(-0.4, -0.7)
+    glVertex2f(-0.3, -0.8)
+    glVertex2f(-0.1, -0.8)
+    glVertex2f(-0.0, -0.7)
+    glVertex2f(-0.2, -0.5)
+
+    glEnd()
+
+
+    # ========================================================
+    # DESENHO DA FUNÇÃO gMeusDesenhos
+    # ========================================================
+
+    gMeusDesenhos()
+
+
+    # Atualiza a tela
     glutSwapBuffers()
 
+
+# ============================================================
+# FUNÇÕES DA GLUT
+# ============================================================
 
 def gRedimensiona(largura, altura):
     pass
@@ -78,17 +328,29 @@ def gTempoExecucao(valor):
     pass
 
 
+# ============================================================
+# INICIALIZAÇÃO
+# ============================================================
+
 def gInicializa():
-    # Cor de fundo: branco
-    glClearColor(1, 1, 1, 1)
+
+    # Cor de fundo: ciano
+    glClearColor(0, 1, 1, 0)
 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    glClear(
+        GL_COLOR_BUFFER_BIT |
+        GL_DEPTH_BUFFER_BIT
+    )
 
     glutSwapBuffers()
 
+
+# ============================================================
+# MAIN
+# ============================================================
 
 def main():
 
@@ -114,7 +376,9 @@ def main():
     )
 
     # Criação da janela
-    glutCreateWindow(g_titulo.encode("utf-8"))
+    glutCreateWindow(
+        g_titulo.encode("utf-8")
+    )
 
     # Funções da GLUT
     glutDisplayFunc(gDesenha)
@@ -123,12 +387,10 @@ def main():
     glutSpecialFunc(gEspeciais)
     glutMouseFunc(gMouse)
 
-    # Movimento do mouse
     glutMotionFunc(gMousePressionado)
     glutPassiveMotionFunc(gMouseLiberado)
 
     # Scroll do mouse
-    # Nem todas as versões do PyOpenGL possuem essa função
     try:
         glutMouseWheelFunc(gMouseScroll)
     except:
