@@ -6,6 +6,20 @@ from PIL import Image
 
 # A matriz será sempre gravada ao lado deste programa.
 ARQUIVO_MATRIZ = Path(__file__).with_name("matriz_imagem.npy")
+ARQUIVO_TEXTO = Path(__file__).with_name("matriz_imagem.txt")
+
+
+def gravar_matriz_em_txt(matriz):
+    """Grava a matriz em texto para que seus pixels possam ser consultados."""
+    altura, largura, canais = matriz.shape
+
+    with ARQUIVO_TEXTO.open("w", encoding="utf-8") as arquivo:
+        arquivo.write(f"Resolução: {largura} x {altura} pixels\n")
+        arquivo.write(f"Canais: {canais} (R, G, B)\n\n")
+
+        for linha in matriz:
+            pixels = (f"[{vermelho}, {verde}, {azul}]" for vermelho, verde, azul in linha)
+            arquivo.write(" ".join(pixels) + "\n")
 
 
 def ler_imagem_e_gravar_matriz():
@@ -24,10 +38,12 @@ def ler_imagem_e_gravar_matriz():
         imagem.show()
         matriz = np.array(imagem)
         np.save(ARQUIVO_MATRIZ, matriz)
+        gravar_matriz_em_txt(matriz)
 
         print("Imagem exibida com sucesso.")
         print(f"Resolução: {imagem.width} x {imagem.height} pixels")
         print(f"Matriz gravada em: {ARQUIVO_MATRIZ}")
+        print(f"Matriz em texto gravada em: {ARQUIVO_TEXTO}")
     except OSError:
         print("Não foi possível abrir esse arquivo como imagem.")
 
