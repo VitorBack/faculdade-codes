@@ -95,9 +95,22 @@ def rotacionar_imagem(sentido):
     if matriz is None:
         return
 
-    # Cada passo de rot90 gira 90 graus; o valor negativo gira à direita.
-    passos = -1 if sentido == "direita" else 1
-    matriz_rotacionada = np.rot90(matriz, k=passos)
+    altura, largura, canais = matriz.shape
+    # A rotação troca a altura pela largura. zeros apenas cria a matriz vazia.
+    matriz_rotacionada = np.zeros((largura, altura, canais), dtype=matriz.dtype)
+
+    for linha in range(altura):
+        for coluna in range(largura):
+            if sentido == "direita":
+                nova_linha = coluna
+                nova_coluna = altura - 1 - linha
+            else:
+                nova_linha = largura - 1 - coluna
+                nova_coluna = linha
+
+            # Copia o pixel RGB para a posição calculada.
+            matriz_rotacionada[nova_linha, nova_coluna] = matriz[linha, coluna]
+
     salvar_e_exibir_matriz(matriz_rotacionada)
 
 
@@ -106,10 +119,21 @@ def espelhar_imagem(sentido):
     if matriz is None:
         return
 
-    if sentido == "vertical":
-        matriz_espelhada = np.flipud(matriz)  # Troca cima e baixo.
-    else:
-        matriz_espelhada = np.fliplr(matriz)  # Troca esquerda e direita.
+    altura, largura, canais = matriz.shape
+    matriz_espelhada = np.zeros((altura, largura, canais), dtype=matriz.dtype)
+
+    for linha in range(altura):
+        for coluna in range(largura):
+            if sentido == "vertical":
+                # A primeira linha vai para a última, a segunda para a penúltima...
+                nova_linha = altura - 1 - linha
+                nova_coluna = coluna
+            else:
+                # A primeira coluna vai para a última, a segunda para a penúltima...
+                nova_linha = linha
+                nova_coluna = largura - 1 - coluna
+
+            matriz_espelhada[nova_linha, nova_coluna] = matriz[linha, coluna]
 
     salvar_e_exibir_matriz(matriz_espelhada)
 
