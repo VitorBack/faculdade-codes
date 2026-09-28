@@ -7,6 +7,7 @@ from PIL import Image
 # A matriz será sempre gravada ao lado deste programa.
 ARQUIVO_MATRIZ = Path(__file__).with_name("matriz_imagem.npy")
 ARQUIVO_TEXTO = Path(__file__).with_name("matriz_imagem.txt")
+ARQUIVO_MEDIANA = Path(__file__).with_name("imagem_mediana.png")
 
 
 def gravar_matriz_em_txt(matriz):
@@ -22,17 +23,22 @@ def gravar_matriz_em_txt(matriz):
             arquivo.write(" ".join(pixels) + "\n")
 
 
-def salvar_e_exibir_matriz(matriz):
-    """Atualiza os arquivos da matriz e mostra a imagem resultante."""
+def salvar_e_exibir_matriz(matriz, arquivo_imagem=None):
+    """Atualiza a matriz, exibe o resultado e, se solicitado, salva a imagem."""
     try:
+        imagem = Image.fromarray(matriz)
+        if arquivo_imagem is not None:
+            imagem.save(arquivo_imagem)
+
         np.save(ARQUIVO_MATRIZ, matriz)
         gravar_matriz_em_txt(matriz)
-        imagem = Image.fromarray(matriz)
         imagem.show()
 
         print(f"Resolução: {imagem.width} x {imagem.height} pixels")
         print(f"Matriz gravada em: {ARQUIVO_MATRIZ}")
         print(f"Matriz em texto gravada em: {ARQUIVO_TEXTO}")
+        if arquivo_imagem is not None:
+            print(f"Imagem gravada em: {arquivo_imagem}")
     except (ValueError, TypeError, OSError) as erro:
         print(f"Não foi possível salvar ou exibir a imagem: {erro}")
 
@@ -168,6 +174,26 @@ def recortar_imagem():
     salvar_e_exibir_matriz(matriz_recortada)
 
 
+def aplicar_mediana():
+    """Substitui cada pixel pela mediana de sua vizinhança 3x3, por canal RGB."""
+    matriz = carregar_matriz()
+    if matriz is None:
+        return
+
+    altura, largura = matriz.shape[:2]
+    # Repete os pixels das bordas para completar as janelas em toda a imagem.
+    matriz_com_borda = np.pad(matriz, ((1, 1), (1, 1), (0, 0)), mode="edge")
+    matriz_mediana = np.empty_like(matriz)
+
+    for linha in range(altura):
+        for coluna in range(largura):
+            janela = matriz_com_borda[linha:linha + 3, coluna:coluna + 3]
+            # Lê sempre a imagem de entrada, sem reutilizar pixels já filtrados.
+            matriz_mediana[linha, coluna] = np.median(janela, axis=(0, 1))
+
+    salvar_e_exibir_matriz(matriz_mediana, ARQUIVO_MEDIANA)
+
+
 def main():
     while True:
         print("\n--- Processamento de Imagens ---")
@@ -178,6 +204,7 @@ def main():
         print("5 - Espelhar verticalmente (cima/baixo)")
         print("6 - Espelhar horizontalmente (esquerda/direita)")
         print("7 - Recortar imagem")
+        print("8 - Aplicar filtro de mediana 3x3 e gerar nova imagem")
         print("0 - Sair")
         print("As alterações atualizam a matriz gravada em NPY e TXT.")
 
@@ -197,6 +224,8 @@ def main():
             espelhar_imagem("horizontal")
         elif opcao == "7":
             recortar_imagem()
+        elif opcao == "8":
+            aplicar_mediana()
         elif opcao == "0":
             break
         else:
