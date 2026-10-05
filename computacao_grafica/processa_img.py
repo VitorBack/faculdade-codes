@@ -175,19 +175,36 @@ def recortar_imagem():
 
 
 def aplicar_mediana():
-    """Substitui cada pixel pela mediana de sua vizinhança 3x3, por canal RGB."""
+    """Aplica a mediana por canal RGB com o tamanho de máscara escolhido."""
     matriz = carregar_matriz()
     if matriz is None:
         return
 
+    tamanhos_permitidos = (3, 5, 7, 9, 15, 21)
+    print("Máscaras disponíveis: " + ", ".join(
+        f"{tamanho}x{tamanho}" for tamanho in tamanhos_permitidos
+    ))
+    try:
+        tamanho = int(input("Informe o tamanho da máscara (3, 5, 7, 9, 15 ou 21): "))
+    except ValueError:
+        print("Informe um número inteiro para o tamanho da máscara.")
+        return
+
+    if tamanho not in tamanhos_permitidos:
+        print("Tamanho inválido. Escolha um dos tamanhos disponíveis.")
+        return
+
     altura, largura = matriz.shape[:2]
+    raio = tamanho // 2
     # Repete os pixels das bordas para completar as janelas em toda a imagem.
-    matriz_com_borda = np.pad(matriz, ((1, 1), (1, 1), (0, 0)), mode="edge")
+    matriz_com_borda = np.pad(matriz, ((raio, raio), (raio, raio), (0, 0)), mode="edge")
     matriz_mediana = np.empty_like(matriz)
 
     for linha in range(altura):
         for coluna in range(largura):
-            janela = matriz_com_borda[linha:linha + 3, coluna:coluna + 3]
+            janela = matriz_com_borda[
+                linha:linha + tamanho, coluna:coluna + tamanho
+            ]
             # Lê sempre a imagem de entrada, sem reutilizar pixels já filtrados.
             matriz_mediana[linha, coluna] = np.median(janela, axis=(0, 1))
 
@@ -204,7 +221,7 @@ def main():
         print("5 - Espelhar verticalmente (cima/baixo)")
         print("6 - Espelhar horizontalmente (esquerda/direita)")
         print("7 - Recortar imagem")
-        print("8 - Aplicar filtro de mediana 3x3 e gerar nova imagem")
+        print("8 - Aplicar filtro de mediana (escolher tamanho da máscara)")
         print("0 - Sair")
         print("As alterações atualizam a matriz gravada em NPY e TXT.")
 
