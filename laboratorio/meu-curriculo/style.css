@@ -1,0 +1,67 @@
+/* Configuração básica para resetar margens */
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+/* LACUNA 4: Pesquise como mudar a fonte do site. Tente usar 'Arial' ou 'sans-serif' */
+font-family: sans-serif;
+/* LACUNA 5: Defina uma cor de fundo clara para o body, use o nome da cor ou código
+Hexadecimal (#) */
+background-color: #f4f4f4;
+color: #333;
+line-height: 1.6;
+transition: background-color 0.3s, color 0.3s;
+}
+header {
+/* LACUNA 6: Escolha uma cor de fundo para o cabeçalho que contraste bem com o
+texto branco */
+background-color: #0056b3;
+color: white;
+padding: 2rem 0;
+text-align: center;
+}
+main {
+max-width: 800px;
+/* DICA: 'margin: 20px auto' centraliza o bloco na tela */
+margin: 20px auto;
+padding: 20px;
+background: #fff;
+border-radius: 8px;
+box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+section {
+margin-bottom: 20px;
+}
+h2 {
+border-bottom: 2px solid #0056b3;
+padding-bottom: 5px;
+margin-bottom: 10px;
+}
+ul {
+list-style-type: none;
+
+}
+a {
+/* LACUNA 7: Remova o sublinhado padrão dos links pesquisando a propriedade
+'text-decoration' */
+text-decoration: none;
+color: #0056b3;
+}
+/* --- CLASSE PARA O MODO ESCURO (Usado no JavaScript) --- */
+.dark-mode {
+background-color: #1a1a1a;
+color: #f4f4f4;
+}
+.dark-mode main {
+background: #2a2a2a;
+box-shadow: 0 4px 8px rgba(255,255,255,0.1);
+}
+.dark-mode h2 {
+border-bottom: 2px solid #4da3ff;
+}
+.dark-mode a {
+color: #4da3ff;
+}

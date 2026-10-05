@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#7655ce">
+  <meta name="description" content="Organize suas tarefas, escolha prioridades e acompanhe seus prazos. Um passo de cada vez, tudo em dia.">
+  <title>em dia — suas tarefas, com mais leveza</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="icon-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4m8-4v4M4 11h16m-11 5h.01M12 16h.01M15 16h.01"/></symbol>
+    <symbol id="icon-list" viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+    <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="icon-trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V4h6v2m-10 0 1 14h12l1-14M10 10v6m4-6v6"/></symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></symbol>
+    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    <symbol id="icon-leaf" viewBox="0 0 24 24"><path d="M20 4C9 2 3 9 6 15s14 4 14-11ZM5 21 15 10"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#main">Pular para o conteúdo</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./" aria-label="em dia — início">
+        <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#icon-check"/></svg></span>
+        <span>em dia<span class="brand-period">.</span></span>
+      </a>
+      <span class="header-caption">Um passo de cada vez.</span>
+      <div class="today"><svg class="icon" aria-hidden="true"><use href="#icon-calendar"/></svg><time id="today"></time></div>
+    </div>
+  </header>
+
+  <main id="main" class="page">
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <div class="eyebrow"><span></span> SEU ESPAÇO PARA ORGANIZAR</div>
+        <h1 id="page-title">Menos na cabeça.<br>Mais no seu <span>dia.</span></h1>
+        <p>Organize o que importa e celebre cada tarefa concluída.</p>
+      </div>
+      <div class="intro-art" aria-hidden="true">
+        <span class="art-orbit"></span>
+        <span class="art-spark spark-one">✦</span><span class="art-spark spark-two">✦</span>
+        <div class="art-note">
+          <div class="note-heading"><span></span><span></span><span></span></div>
+          <div class="note-row"><span class="note-check"><svg class="icon"><use href="#icon-check"/></svg></span><i></i></div>
+          <div class="note-row"><span class="note-check"><svg class="icon"><use href="#icon-check"/></svg></span><i></i></div>
+          <div class="note-row"><span class="note-box"></span><i></i></div>
+        </div>
+        <span class="art-badge"><svg class="icon"><use href="#icon-check"/></svg> Você dá conta.</span>
+      </div>
+    </section>
+
+    <section class="stats" aria-label="Resumo das tarefas">
+      <div class="stat"><span class="stat-icon purple"><svg class="icon" aria-hidden="true"><use href="#icon-list"/></svg></span><div><span class="stat-label">Total de tarefas</span><strong id="total-count">0</strong></div><span class="stat-decoration">Tudo por aqui</span></div>
+      <div class="stat"><span class="stat-icon amber"><svg class="icon" aria-hidden="true"><use href="#icon-clock"/></svg></span><div><span class="stat-label">Pendentes</span><strong id="pending-count">0</strong></div><span class="stat-decoration">Um passo por vez</span></div>
+      <div class="stat"><span class="stat-icon green"><svg class="icon" aria-hidden="true"><use href="#icon-check"/></svg></span><div><span class="stat-label">Concluídas</span><strong id="done-count">0</strong></div><span class="stat-decoration">Pequenas conquistas</span></div>
+    </section>
+
+    <div class="workspace">
+      <aside class="form-column">
+        <section class="new-task panel" aria-labelledby="form-title">
+          <div class="section-heading"><span class="heading-icon"><svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg></span><h2 id="form-title">Nova tarefa</h2></div>
+          <p class="section-description">Tire uma ideia da cabeça e coloque aqui.</p>
+          <form id="task-form">
+            <label for="task-text">O que você precisa fazer?</label>
+            <input id="task-text" name="text" type="text" placeholder="Ex.: Estudar para a prova" maxlength="180" required autocomplete="off">
+            <fieldset class="priority-field">
+              <legend>Qual é a prioridade?</legend>
+              <div class="priority-options">
+                <label class="priority-option high"><input type="radio" name="priority" value="Alta"><span><i></i>Alta</span></label>
+                <label class="priority-option medium"><input type="radio" name="priority" value="Média" checked><span><i></i>Média</span></label>
+                <label class="priority-option low"><input type="radio" name="priority" value="Baixa"><span><i></i>Baixa</span></label>
+              </div>
+            </fieldset>
+            <label for="task-date">Até quando?</label>
+            <input id="task-date" name="date" type="date" required min="0001-01-01" max="9999-12-31">
+            <button class="button-primary" type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg>Adicionar tarefa</button>
+          </form>
+          <div class="form-footnote"><svg class="icon" aria-hidden="true"><use href="#icon-leaf"/></svg> Grandes planos começam com pequenos passos.</div>
+        </section>
+        <div class="storage-note" id="storage-note"><span class="storage-dot"></span><span id="storage-text">Suas tarefas ficam salvas neste navegador.</span></div>
+      </aside>
+
+      <section class="tasks-panel panel" aria-labelledby="list-title">
+        <div class="list-heading"><div><h2 id="list-title">Minhas tarefas <span id="list-count" class="count-badge">0</span></h2><p class="section-description">Um pouco de foco, um dia mais leve.</p></div><span class="list-heading-icon"><svg class="icon" aria-hidden="true"><use href="#icon-list"/></svg></span></div>
+        <div class="list-controls">
+          <div class="filters" role="group" aria-label="Filtrar tarefas por situação">
+            <button class="filter active" type="button" data-filter="all" aria-pressed="true">Todas</button>
+            <button class="filter" type="button" data-filter="pending" aria-pressed="false">Pendentes</button>
+            <button class="filter" type="button" data-filter="done" aria-pressed="false">Concluídas</button>
+          </div>
+          <label class="search-field"><svg class="icon" aria-hidden="true"><use href="#icon-search"/></svg><input id="task-search" type="search" placeholder="Buscar tarefa" aria-label="Buscar tarefa"></label>
+        </div>
+        <div class="task-area">
+          <ul id="task-list" class="task-list" aria-label="Tarefas"></ul>
+          <div id="empty-state" class="empty-state">
+            <div class="empty-illustration" aria-hidden="true"><span class="empty-spark">✦</span><div class="empty-paper"><svg class="icon"><use href="#icon-check"/></svg><i></i><i></i></div><span class="empty-dot"></span></div>
+            <h3 id="empty-title">Seu dia começa com uma tarefa</h3>
+            <p id="empty-description">O que você quer tirar do papel hoje?<br>Adicione sua primeira tarefa e vamos começar.</p>
+            <button id="empty-action" type="button" class="button-text">Criar minha primeira tarefa <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></button>
+          </div>
+        </div>
+        <div class="progress-section"><div class="progress-label"><span>Seu progresso</span><span id="progress-text">0 de 0 concluídas</span></div><progress id="task-progress" max="100" value="0" aria-label="Progresso das tarefas">0%</progress></div>
+      </section>
+    </div>
+    <footer class="site-footer"><span>Feito para deixar a rotina mais leve.</span><span>Respire. Organize. <strong>Realize.</strong></span></footer>
+    <noscript><p class="noscript">Ative o JavaScript no navegador para adicionar e gerenciar suas tarefas.</p></noscript>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
