@@ -8,6 +8,7 @@ from PIL import Image
 ARQUIVO_MATRIZ = Path(__file__).with_name("matriz_imagem.npy")
 ARQUIVO_TEXTO = Path(__file__).with_name("matriz_imagem.txt")
 ARQUIVO_MEDIANA = Path(__file__).with_name("imagem_mediana.png")
+ARQUIVO_EQUALIZADA = Path(__file__).with_name("imagem_equalizada.png")
 
 
 def gravar_matriz_em_txt(matriz):
@@ -211,6 +212,53 @@ def aplicar_mediana():
     salvar_e_exibir_matriz(matriz_mediana, ARQUIVO_MEDIANA)
 
 
+def equalizar_histograma():
+    """Equaliza cada canal RGB agrupando as intensidades nas classes escolhidas."""
+    matriz = carregar_matriz()
+    if matriz is None:
+        return
+
+    classes_permitidas = (2, 4, 8, 16, 32, 64, 128)
+    try:
+        quantidade_classes = int(input(
+            "Informe a quantidade de classes (2, 4, 8, 16, 32, 64 ou 128): "
+        ))
+    except ValueError:
+        print("Informe um número inteiro para a quantidade de classes.")
+        return
+
+    if quantidade_classes not in classes_permitidas:
+        print("Quantidade inválida. Escolha 2, 4, 8, 16, 32, 64 ou 128 classes.")
+        return
+
+    altura, largura, canais = matriz.shape
+    total_pixels = altura * largura
+    largura_classe = 256 // quantidade_classes
+    matriz_equalizada = matriz.copy()
+
+    for canal in range(canais):
+        # Exemplo com 4 classes: 0-63, 64-127, 128-191 e 192-255.
+        indices_classes = matriz[:, :, canal] // largura_classe
+        histograma = np.bincount(indices_classes.ravel(), minlength=quantidade_classes)
+        acumulado = histograma.cumsum()
+        menor_acumulado = acumulado[histograma > 0][0]
+
+        # Uma única classe ocupada não tem contraste entre classes para expandir.
+        if menor_acumulado == total_pixels:
+            continue
+
+        # Normaliza a distribuição acumulada para mapear as classes ocupadas.
+        distribuicao = (acumulado - menor_acumulado) / (total_pixels - menor_acumulado)
+        novas_classes = np.rint(
+            np.clip(distribuicao, 0, 1) * (quantidade_classes - 1)
+        )
+        # Espalha os níveis resultantes por toda a faixa de exibição (0 a 255).
+        tabela = np.rint(novas_classes * 255 / (quantidade_classes - 1)).astype(np.uint8)
+        matriz_equalizada[:, :, canal] = tabela[indices_classes]
+
+    salvar_e_exibir_matriz(matriz_equalizada, ARQUIVO_EQUALIZADA)
+
+
 def main():
     while True:
         print("\n--- Processamento de Imagens ---")
@@ -222,6 +270,7 @@ def main():
         print("6 - Espelhar horizontalmente (esquerda/direita)")
         print("7 - Recortar imagem")
         print("8 - Aplicar filtro de mediana (escolher tamanho da máscara)")
+        print("9 - Equalizar histograma (escolher quantidade de classes)")
         print("0 - Sair")
         print("As alterações atualizam a matriz gravada em NPY e TXT.")
 
@@ -243,6 +292,8 @@ def main():
             recortar_imagem()
         elif opcao == "8":
             aplicar_mediana()
+        elif opcao == "9":
+            equalizar_histograma()
         elif opcao == "0":
             break
         else:
