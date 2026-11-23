@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#214d3d">
+  <meta name="description" content="O caixa do Bar João & Maria: cardápio, comandas e caderneta de fiado em um só lugar.">
+  <title>João & Maria · Caixa do bar</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="js/core.js" defer></script>
+  <script src="js/illustrations.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Ir para o conteúdo</a>
+  <aside class="sidebar">
+    <a class="brand" href="#cardapio" aria-label="João e Maria, início">
+      <span class="brand-mark" aria-hidden="true">j<span>&</span>m<span class="brand-star">✳</span></span>
+      <strong>JOÃO & MARIA</strong><span class="brand-caption">BAR · PETISCOS · BOA PROSA</span>
+    </a>
+    <p class="nav-label">POR AQUI</p>
+    <nav class="navigation" aria-label="Navegação principal">
+      <button class="nav-item active" data-view="cardapio" aria-current="page"><span data-icon="menu"></span>Cardápio<span class="nav-arrow">↗</span></button>
+      <button class="nav-item" data-view="caderneta"><span data-icon="book"></span>Caderneta<span id="debt-count" class="nav-badge" hidden>0</span></button>
+      <button class="nav-item" data-view="vendas"><span data-icon="receipt"></span>Vendas</button>
+    </nav>
+    <div class="sidebar-note"><span class="note-flower" aria-hidden="true">✳</span><p>Bom de prosa.<br>Bom de conta.</p><span>O bar de todos os dias.</span></div>
+    <div class="sidebar-footer"><span class="status-dot"></span><span id="storage-status">Salvo neste navegador</span><small>Feito para o nosso balcão.</small></div>
+  </aside>
+
+  <div class="workspace">
+    <header class="topbar"><span>O SEU BALCÃO DIGITAL</span><div><span class="open-label"><i></i>Vamos atender</span><span id="today-label"></span><span class="user-avatar" aria-label="João e Maria">JM</span></div></header>
+    <div id="storage-warning" class="storage-warning" role="alert" hidden></div>
+    <main id="main" tabindex="-1">
+      <section id="view-cardapio" class="view" aria-labelledby="menu-heading">
+        <div class="pos-layout">
+          <div class="menu-area">
+            <div class="page-heading"><div><p class="eyebrow">CASA ABERTA, MESA POSTA</p><h1 id="menu-heading">O de sempre, por favor.</h1><p>Escolha os favoritos e deixe o resto com a gente.</p></div><button class="icon-button manage-button" id="manage-products" aria-label="Gerenciar cardápio" title="Gerenciar cardápio"><span data-icon="sliders"></span></button></div>
+            <div class="welcome-banner"><div><span class="banner-kicker">BEM-VINDO AO JOÃO & MARIA</span><p>Petisco na mesa.<br><em>Conversa sem pressa.</em></p><span class="banner-foot">Capricho da casa, do primeiro ao último pedido.</span></div><div class="banner-art" id="banner-art" aria-hidden="true"></div></div>
+            <div class="menu-toolbar"><label class="search-field"><span data-icon="search"></span><input id="product-search" type="search" placeholder="O que vai ser hoje?" aria-label="Buscar produto" autocomplete="off"><kbd>/</kbd></label></div>
+            <div class="category-filters" id="category-filters" role="group" aria-label="Filtrar por categoria"></div>
+            <div class="section-caption"><h2 id="products-heading">Nosso cardápio</h2><span id="product-count"></span></div>
+            <div id="product-grid" class="product-grid" aria-labelledby="products-heading"></div>
+            <div class="menu-end"><span>✳</span> Comida boa. Cerveja gelada. Conta organizada.</div>
+          </div>
+          <aside class="cart-panel" id="cart-panel" aria-labelledby="cart-heading">
+            <div class="cart-header"><div class="cart-title"><span class="cart-symbol" data-icon="receipt"></span><div><p class="eyebrow">SAINDO UM PEDIDO!</p><h2 id="cart-heading">Comanda atual</h2></div></div><label class="table-select"><span data-icon="table"></span><span class="sr-only">Mesa da comanda</span><select id="table-select"></select><span class="table-status">Em atendimento</span></label></div>
+            <div class="cart-items-heading"><span>ITENS DO PEDIDO <b id="cart-count">0</b></span><button class="text-button" id="clear-cart" disabled>Limpar</button></div>
+            <div class="cart-items" id="cart-items"></div>
+            <div class="cart-bottom"><div class="subtotal-line"><span>Subtotal</span><span id="cart-subtotal">R$ 0,00</span></div><div class="service-line"><span>Taxa de serviço</span><span>Não inclusa</span></div><div class="cart-total"><span>Total da conta</span><strong id="cart-total">R$ 0,00</strong></div><button class="button primary checkout-button" id="checkout-button" disabled><span data-icon="check"></span>Fechar conta<span class="button-arrow">→</span></button><p class="cart-tip"><span data-icon="lock"></span>Pagamento na hora ou na caderneta.</p></div>
+            <div class="receipt-edge" aria-hidden="true"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="view-caderneta" class="view wide-view" aria-labelledby="ledger-heading" hidden>
+        <div class="page-heading"><div><p class="eyebrow">CONFIANÇA QUE VIRA HISTÓRIA</p><h1 id="ledger-heading">A nossa caderneta.</h1><p>As contas ficam aqui. A amizade continua no balcão.</p></div><button class="button secondary export-button"><span data-icon="download"></span>Exportar dados</button></div>
+        <div class="summary-grid ledger-summary"><article class="summary-card green-summary"><span>Total em aberto</span><strong id="debt-total">R$ 0,00</strong><small>Somando as contas da caderneta</small></article><article class="summary-card"><span>Clientes com saldo</span><strong id="debt-clients">0</strong><small>Uma conta para cada nome</small></article><div class="ledger-note"><span data-icon="book"></span><p>Fiado bem anotado,<br><em>amizade bem cuidada.</em></p></div></div>
+        <div class="section-toolbar"><h2>Contas em aberto</h2><label class="search-field"><span data-icon="search"></span><input id="customer-search" type="search" placeholder="Buscar cliente" aria-label="Buscar cliente" autocomplete="off"></label></div>
+        <div id="debt-list" class="debt-list"></div>
+      </section>
+
+      <section id="view-vendas" class="view wide-view" aria-labelledby="sales-heading" hidden>
+        <div class="page-heading"><div><p class="eyebrow">CADA PEDIDO CONTA</p><h1 id="sales-heading">O movimento da casa.</h1><p>Pedidos finalizados e recebimentos, tudo bem anotado.</p></div><button class="button secondary export-button"><span data-icon="download"></span>Exportar dados</button></div>
+        <div class="summary-grid"><article class="summary-card green-summary"><span>Vendas de hoje</span><strong id="sales-today">R$ 0,00</strong><small>Pagamentos imediatos + fiados</small></article><article class="summary-card"><span>Recebido hoje</span><strong id="received-today">R$ 0,00</strong><small>Vendas à vista + dívidas quitadas</small></article><article class="summary-card"><span>Pedidos de hoje</span><strong id="orders-today">0</strong><small>Mais uma mesa bem atendida</small></article></div>
+        <div class="section-caption"><h2>Histórico de vendas</h2><span>Mais recentes primeiro</span></div><div id="sales-list" class="sales-list"></div>
+        <div class="section-caption payments-heading"><h2>Quitações da caderneta</h2><span>Recebimentos registrados</span></div><div id="payments-list" class="sales-list"></div>
+      </section>
+    </main>
+    <footer class="main-footer"><span>JOÃO & MARIA <b>✳</b> Aqui a casa é sua.</span><span>Feito de boas histórias.</span></footer>
+  </div>
+  <button id="mobile-cart" class="mobile-cart" hidden><span data-icon="receipt"></span><span>Ver comanda <b id="mobile-cart-count">0</b></span><strong id="mobile-cart-total">R$ 0,00</strong><span>↑</span></button>
+
+  <dialog id="checkout-dialog" aria-labelledby="checkout-heading"><form id="checkout-form"><div class="dialog-heading"><div><p class="eyebrow">ATÉ A PRÓXIMA RODADA</p><h2 id="checkout-heading">Vamos fechar a conta?</h2></div><button type="button" class="icon-button" data-close="checkout-dialog" aria-label="Fechar"><span data-icon="close"></span></button></div><div class="checkout-summary"><span id="checkout-table"></span><span id="checkout-items"></span><strong id="checkout-total"></strong></div><fieldset class="payment-options"><legend>Como fica o pagamento?</legend><label class="payment-option"><input type="radio" name="payment" value="imediato" checked><span data-icon="wallet"></span><span><strong>Pagamento imediato</strong><small>Cliente já acertou a conta.</small></span></label><label class="payment-option"><input type="radio" name="payment" value="fiado"><span data-icon="book"></span><span><strong>Deixar fiado</strong><small>Anotar na caderneta do cliente.</small></span></label></fieldset><div id="customer-field" class="form-field" hidden><label for="customer-name">Nome do cliente</label><input id="customer-name" name="customer" placeholder="Ex.: Carlos Silva" maxlength="80" list="customer-suggestions" autocomplete="off"><datalist id="customer-suggestions"></datalist><small>Use o mesmo nome para somar à conta que já existe.</small></div><p id="checkout-error" class="form-error" role="alert" hidden></p><button class="button primary full-width" type="submit" id="confirm-checkout">Confirmar pagamento<span>→</span></button></form></dialog>
+
+  <dialog id="confirm-dialog" aria-labelledby="confirm-heading"><form id="confirm-form"><div class="dialog-heading"><h2 id="confirm-heading"></h2><button type="button" class="icon-button" data-close="confirm-dialog" aria-label="Fechar"><span data-icon="close"></span></button></div><p id="confirm-description" class="confirm-description"></p><p id="confirm-error" class="form-error" role="alert" hidden></p><div class="dialog-actions"><button type="button" class="button secondary" data-close="confirm-dialog">Voltar</button><button type="submit" class="button primary" id="confirm-action">Confirmar</button></div></form></dialog>
+
+  <dialog id="products-dialog" class="large-dialog" aria-labelledby="manage-heading"><div class="dialog-heading"><div><p class="eyebrow">DO JEITO DA CASA</p><h2 id="manage-heading">Gerenciar cardápio</h2></div><button class="icon-button" data-close="products-dialog" aria-label="Fechar"><span data-icon="close"></span></button></div><p class="dialog-subtitle">Ajuste os produtos e os preços servidos no bar.</p><button id="new-product" class="button primary"><span data-icon="plus"></span>Novo produto</button><div id="managed-products" class="managed-products"></div></dialog>
+
+  <dialog id="product-dialog" aria-labelledby="product-heading"><form id="product-form"><div class="dialog-heading"><h2 id="product-heading">Novo produto</h2><button type="button" class="icon-button" data-close="product-dialog" aria-label="Fechar"><span data-icon="close"></span></button></div><div class="form-field"><label for="product-name">Nome do produto</label><input id="product-name" maxlength="60" required placeholder="Ex.: Porção de mandioca"></div><div class="form-field"><label for="product-description">Descrição</label><input id="product-description" maxlength="100" placeholder="Um detalhe para abrir o apetite"></div><div class="form-row"><div class="form-field"><label for="product-category">Categoria</label><select id="product-category"></select></div><div class="form-field"><label for="product-price">Preço (R$)</label><input id="product-price" type="text" inputmode="decimal" required maxlength="10" placeholder="25,00"></div></div><label class="availability"><input id="product-available" type="checkbox" checked>Disponível no cardápio</label><p class="field-note">Alterações de preço valem para novas comandas. Itens já adicionados mantêm o preço original.</p><p id="product-error" class="form-error" role="alert" hidden></p><button type="submit" class="button primary full-width">Salvar produto<span data-icon="check"></span></button></form></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <noscript><div class="noscript">Ative o JavaScript no navegador para utilizar o caixa.</div></noscript>
+</body>
+</html>

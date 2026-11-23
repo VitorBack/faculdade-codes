@@ -1,0 +1,10 @@
+{
+  "name": "bar-joao-maria",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Caixa estático do Bar João & Maria, em HTML, CSS e JavaScript puro.",
+  "scripts": {
+    "start": "node scripts/serve.cjs",
+    "test": "node --test tests/core.test.cjs"
+  }
+}
