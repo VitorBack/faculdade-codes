@@ -21,6 +21,7 @@ from OpenGL import GLUT
 
 
 TAM_JANELA = 10.0
+POSICAO_LUZ = (0.0, 12.0, 0.0)
 
 
 class ProjetoBase3D:
@@ -112,10 +113,22 @@ class ProjetoBase3D:
                 desenha(*parametros)
                 GL.glPopMatrix()
 
+    @staticmethod
+    def desenha_ponto_luz():
+        GL.glPointSize(6)
+        GL.glColor3f(1.0, 0.5, 0.0)
+        GL.glBegin(GL.GL_POINTS)
+        GL.glVertex3f(*POSICAO_LUZ)
+        GL.glEnd()
+        GL.glPointSize(1)
+
     def desenha(self):
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
         self.posiciona_observador()
+        # A fonte e o marcador compartilham a mesma posição no mundo.
+        GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, (*POSICAO_LUZ, 1.0))
         self.desenha_objetos()
+        self.desenha_ponto_luz()
         self.desenha_plano_3d()
         GLUT.glutSwapBuffers()
 
@@ -191,7 +204,10 @@ def main():
     GL.glEnable(GL.GL_DEPTH_TEST)
     GL.glEnable(GL.GL_LIGHT0)
     GL.glEnable(GL.GL_COLOR_MATERIAL)
-    GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, (-0.4, 0.7, 1, 0))
+    GL.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, (0.18, 0.18, 0.18, 1.0))
+    GL.glLightf(GL.GL_LIGHT0, GL.GL_LINEAR_ATTENUATION, 0.025)
+    GL.glMaterialfv(GL.GL_FRONT_AND_BACK, GL.GL_SPECULAR, (0.3, 0.3, 0.3, 1.0))
+    GL.glMaterialf(GL.GL_FRONT_AND_BACK, GL.GL_SHININESS, 32.0)
 
     projeto = ProjetoBase3D()
     GLUT.glutDisplayFunc(projeto.desenha)
